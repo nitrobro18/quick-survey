@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quick Survey</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #b7d9ff;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .question-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button {
+        padding: 12px 22px;
+        margin: 8px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.1);
+    }
+
+    .yes-btn { background: #8be88b; }
+    .no-btn { background: #ff7a7a; }
+
+    /* Floating hearts */
+    .heart {
+        position: fixed;
+        bottom: -20px;
+        font-size: 22px;
+        animation: floatUp 4s linear infinite;
+        opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+        0% { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-800px) scale(1.8); opacity: 0; }
+    }
+
+    /* Gundam */
+    #gundam {
+        width: 120px;
+        position: absolute;
+        left: -150px;
+        bottom: 10px;
+        transition: transform 2s ease;
+    }
+
+    /* Final message screen */
+    #finalScreen {
+        display: none;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    #cat {
+        width: 250px;
+        margin-top: 20px;
+        border-radius: 15px;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>Quick Survey</h1>
+
+<div id="survey">
+
+    <!-- Q1 -->
+    <div class="question-box" id="q1">
+        <p>How’s your week going so far?</p>
+        <button onclick="next('q1','q2')">Great</button>
+        <button onclick="next('q1','q2')">Good</button>
+        <button onclick="next('q1','q2')">Meh</button>
+        <button onclick="next('q1','q2')">Could be better</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-box" id="q2" style="display:none;">
+        <p>What’s your favorite kind of hangout?</p>
+        <button onclick="next('q2','qG')">Movies</button>
+        <button onclick="next('q2','qG')">Food</button>
+        <button onclick="next('q2','qG')">Chill conversation</button>
+        <button onclick="next('q2','qG')">Anything fun</button>
+    </div>
+
+    <!-- Gundam Question -->
+    <div class="question-box" id="qG" style="display:none;">
+        <p>Do you like Gundam?</p>
+        <img src="gundam.png" id="gundam">
+        <button class="yes-btn" onclick="next('qG','q3')">Yes!</button>
+        <button class="no-btn" id="noBtn" onclick="gundamSteal()">No</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-box" id="q3" style="display:none;">
+        <p>Which days are usually easiest for you to do something fun?</p>
+        <button onclick="next('q3','q4')">Weekdays</button>
+        <button onclick="next('q3','q4')">Weekends</button>
+        <button onclick="next('q3','q4')">Depends</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-box" id="q4" style="display:none;">
+        <p>Do you enjoy spending time with certain people who make you smile?</p>
+        <button class="yes-btn" onclick="showFinal()">Yes</button>
+        <button class="yes-btn" onclick="showFinal()">Definitely yes</button>
+        <button class="yes-btn" onclick="showFinal()">Absolutely</button>
+    </div>
+
+</div>
+
+<!-- Final Screen -->
+<div id="finalScreen">
+    <h2>aw yay! I’ll text you :3</h2>
+    <img id="cat" src="cat.png">
+</div>
+
+<script>
+/* Page transitions */
+function next(hideID, showID) {
+    document.getElementById(hideID).style.display = "none";
+    document.getElementById(showID).style.display = "block";
+}
+
+/* Gundam steals the No button */
+function gundamSteal() {
+    let gun = document.getElementById("gundam");
+    let no = document.getElementById("noBtn");
+
+    no.style.position = "relative";
+
+    gun.style.transform = "translateX(220px)";
+
+    setTimeout(() => {
+        no.style.transition = "1.2s ease";
+        no.style.transform = "translateY(200px) rotate(40deg)";
+        no.style.opacity = "0";
+    }, 1800);
+}
+
+/* Final screen */
+function showFinal() {
+    document.getElementById("survey").style.display = "none";
+    document.getElementById("finalScreen").style.display = "block";
+}
+
+/* Floating hearts generator */
+setInterval(() => {
+    let heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.fontSize = (18 + Math.random() * 14) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => { heart.remove(); }, 4000);
+}, 700);
+</script>
+
+</body>
+</html>
