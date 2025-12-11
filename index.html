@@ -16,11 +16,14 @@
 
     h1, h2 {
         text-align: center;
+        padding: 0 10px;
+        word-wrap: break-word;
     }
 
     .container {
         max-width: 500px;
-        margin: 20px auto;
+        width: 95%;
+        margin: 15px auto;
         background: white;
         padding: 20px;
         border-radius: 20px;
@@ -39,18 +42,19 @@
     .btn {
         display: block;
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         margin: 10px 0;
         background: #ff91a4;
         border: none;
-        font-size: 18px;
+        font-size: 17px;
         border-radius: 25px;
         cursor: pointer;
         transition: transform 0.15s;
+        text-align: center;
     }
 
     .btn:hover {
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
 
     /* Floating hearts */
@@ -62,38 +66,25 @@
     .heart {
         position: fixed;
         color: pink;
-        font-size: 20px;
+        font-size: 18px;
         animation: floatHearts 3s linear infinite;
         pointer-events: none;
-    }
-
-    /* Burst heart button */
-    #burstHeart {
-        width: 80px;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        cursor: pointer;
-        transition: transform .2s;
-        z-index: 999;
-    }
-
-    #burstHeart:active {
-        transform: scale(1.3);
+        z-index: 10;
     }
 
     /* Gundam image */
     .gundam-pic {
-        width: 100px;
+        width: 120px;
+        max-width: 90vw;
         display: block;
         margin: 10px auto;
     }
 
-    /* Gundam run animation */
+    /* Gundam animation */
     @keyframes runCycle {
-        0% { transform: scale(1) translateY(0); }
-        50% { transform: scale(1) translateY(-5px); }
-        100% { transform: scale(1) translateY(0); }
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
     }
 
     .running-gundam {
@@ -104,15 +95,20 @@
     #yesScreen, #finalScreen {
         display: none;
         text-align: center;
-        padding: 40px;
+        padding: 40px 20px;
         font-size: 24px;
+        word-wrap: break-word;
+    }
+
+    /* Mobile text resize */
+    @media (max-width: 400px) {
+      h1, h2 { font-size: 20px; }
+      .btn { font-size: 16px; padding: 12px; }
     }
 </style>
 </head>
 
 <body>
-
-<img id="burstHeart" src="heart.png">
 
 <div class="container">
     <h1>Quick Survey</h1>
@@ -159,7 +155,7 @@
         <button class="btn" onclick="next()">Absolutely</button>
     </div>
 
-    <!-- Q6 (final ask) -->
+    <!-- Q6 -->
     <div class="question" id="q6">
         <h2>Denise would you maybe like go out with me on a date? ❤️</h2>
         <button class="btn" onclick="yesAnswer()">Yes</button>
@@ -167,12 +163,13 @@
     </div>
 </div>
 
-<!-- YES Special Ending -->
+<!-- YES Screen -->
 <div id="yesScreen">
     <h2>aw yay! i’ll text you :3</h2>
+    <img src="cat.png" style="width: 70%; max-width: 280px; display: block; margin: 20px auto;">
 </div>
 
-<!-- Normal Final Ending -->
+<!-- FINAL Screen -->
 <div id="finalScreen">
     <h2>Thanks for taking my cute little survey! 💖</h2>
 </div>
@@ -186,18 +183,15 @@ function next() {
     document.getElementById(`q${current}`).classList.add("active");
 }
 
-/* YES special ending */
 function yesAnswer() {
     document.querySelector(".container").style.display = "none";
     document.getElementById("yesScreen").style.display = "block";
 }
 
-/* ---- GUNDAM RUNS IN + STEALS THE NO BUTTON ---- */
 function moveNoButton() {
     const btn = document.getElementById("noButton");
     btn.disabled = true;
 
-    // Create Gundam sprite
     let g = document.createElement("img");
     g.src = "gundam.png";
     g.classList.add("running-gundam");
@@ -205,20 +199,16 @@ function moveNoButton() {
     g.style.left = "-150px";
     g.style.bottom = "40px";
     g.style.width = "120px";
+    g.style.maxWidth = "90vw";
     g.style.transition = "left 2.5s linear";
     g.style.zIndex = "9999";
     document.body.appendChild(g);
 
-    // Button location
     const rect = btn.getBoundingClientRect();
     const targetX = rect.left - 60;
 
-    // Start running toward the button
-    setTimeout(() => {
-        g.style.left = targetX + "px";
-    }, 50);
+    setTimeout(() => g.style.left = targetX + "px", 50);
 
-    // Grab the button
     setTimeout(() => {
         btn.style.transition = "all 2s ease";
         btn.style.position = "relative";
@@ -226,20 +216,17 @@ function moveNoButton() {
         btn.style.opacity = "0";
     }, 2600);
 
-    // Gundam drags button off-screen
     setTimeout(() => {
         g.style.transition = "left 2s linear";
         g.style.left = "120vw";
     }, 2800);
 
-    // Remove both
     setTimeout(() => {
         btn.style.display = "none";
         g.remove();
     }, 5200);
 }
 
-/* Floating hearts */
 setInterval(() => {
     let heart = document.createElement("div");
     heart.classList.add("heart");
@@ -248,19 +235,6 @@ setInterval(() => {
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 3000);
 }, 600);
-
-/* Burst heart button */
-document.getElementById("burstHeart").addEventListener("click", () => {
-    for (let i = 0; i < 10; i++) {
-        let heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerHTML = "💖";
-        heart.style.left = (window.innerWidth - 100) + "px";
-        heart.style.bottom = "40px";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 3000);
-    }
-});
 </script>
 
 </body>
