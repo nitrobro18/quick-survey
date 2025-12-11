@@ -7,34 +7,43 @@
 
 <style>
     body {
-        background: #b3d9ff;
+        background: linear-gradient(180deg, #cce6ff, #b3d9ff);
         font-family: "Poppins", sans-serif;
         margin: 0;
         padding: 0;
         overflow-x: hidden;
     }
 
-    h1, h2 {
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 34px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    h2 {
         text-align: center;
         padding: 0 10px;
-        word-wrap: break-word;
+        font-size: 24px;
+        color: #444;
+        line-height: 1.4;
     }
 
     .container {
-        max-width: 500px;
-        width: 95%;
-        margin: 15px auto;
+        max-width: 550px;
+        width: 92%;
+        margin: 25px auto;
         background: white;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        padding: 30px;
+        border-radius: 30px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     .question {
         display: none;
         animation: fadeIn 0.4s ease;
     }
-
     .question.active {
         display: block;
     }
@@ -42,76 +51,71 @@
     .btn {
         display: block;
         width: 100%;
-        padding: 14px;
-        margin: 10px 0;
-        background: #ff91a4;
+        padding: 18px;
+        margin: 14px 0;
+        background: #ff7d95;
         border: none;
-        font-size: 17px;
-        border-radius: 25px;
+        font-size: 20px;
+        border-radius: 35px;
         cursor: pointer;
-        transition: transform 0.15s;
+        color: white;
+        font-weight: 600;
+        transition: transform 0.18s, background 0.2s;
         text-align: center;
     }
 
     .btn:hover {
-        transform: scale(1.04);
-    }
-
-    /* Floating hearts */
-    @keyframes floatHearts {
-        0% { transform: translateY(0) scale(1); opacity: 1; }
-        100% { transform: translateY(-200px) scale(1.6); opacity: 0; }
-    }
-
-    .heart {
-        position: fixed;
-        color: pink;
-        font-size: 18px;
-        animation: floatHearts 3s linear infinite;
-        pointer-events: none;
-        z-index: 10;
+        transform: scale(1.05);
+        background: #ff6a86;
     }
 
     /* Gundam image */
     .gundam-pic {
-        width: 120px;
-        max-width: 90vw;
+        width: 160px;
+        max-width: 85%;
         display: block;
-        margin: 10px auto;
+        margin: 15px auto 25px;
     }
 
-    /* Gundam animation */
+    /* Animation */
     @keyframes runCycle {
         0% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+        50% { transform: translateY(-8px); }
         100% { transform: translateY(0); }
     }
-
     .running-gundam {
-        animation: runCycle 0.3s infinite;
+        animation: runCycle 0.35s infinite;
     }
 
-    /* Ending screens */
+    /* YES screen & Final screen */
     #yesScreen, #finalScreen {
         display: none;
         text-align: center;
         padding: 40px 20px;
-        font-size: 24px;
-        word-wrap: break-word;
+        font-size: 26px;
+        color: #333;
     }
 
-    /* Mobile text resize */
-    @media (max-width: 400px) {
-      h1, h2 { font-size: 20px; }
-      .btn { font-size: 16px; padding: 12px; }
+    /* Cat image */
+    #yesScreen img {
+        width: 75%;
+        max-width: 320px;
+        border-radius: 20px;
+        margin-top: 30px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 </head>
 
 <body>
 
+<h1>Quick Survey</h1>
+
 <div class="container">
-    <h1>Quick Survey</h1>
 
     <!-- Q1 -->
     <div class="question active" id="q1">
@@ -131,12 +135,12 @@
         <button class="btn" onclick="next()">Anything fun</button>
     </div>
 
-    <!-- Q3 (Gundam) -->
+    <!-- Q3 Gundam -->
     <div class="question" id="q3">
         <h2>Do you like Gundam?</h2>
         <img class="gundam-pic" src="gundam.png">
         <button class="btn" onclick="next()">Yes</button>
-        <button class="btn" onclick="next()">No</button>
+        <button id="noButton" class="btn" onclick="moveNoButton()">No</button>
     </div>
 
     <!-- Q4 -->
@@ -155,21 +159,22 @@
         <button class="btn" onclick="next()">Absolutely</button>
     </div>
 
-    <!-- Q6 -->
+    <!-- Q6 Final -->
     <div class="question" id="q6">
-        <h2>Denise would you maybe like go out with me on a date? ❤️</h2>
+        <h2>Denise… would you maybe want to go on a date with me? ❤️</h2>
         <button class="btn" onclick="yesAnswer()">Yes</button>
-        <button id="noButton" class="btn" onclick="moveNoButton()">No</button>
+        <button id="noButton2" class="btn" onclick="moveNoButton()">No</button>
     </div>
+
 </div>
 
-<!-- YES Screen -->
+<!-- YES SCREEN -->
 <div id="yesScreen">
     <h2>aw yay! i’ll text you :3</h2>
-    <img src="cat.png" style="width: 70%; max-width: 280px; display: block; margin: 20px auto;">
+    <img src="cat.png">
 </div>
 
-<!-- FINAL Screen -->
+<!-- FINAL -->
 <div id="finalScreen">
     <h2>Thanks for taking my cute little survey! 💖</h2>
 </div>
@@ -189,52 +194,40 @@ function yesAnswer() {
 }
 
 function moveNoButton() {
-    const btn = document.getElementById("noButton");
+    const btn = document.getElementById("noButton") || document.getElementById("noButton2");
     btn.disabled = true;
 
     let g = document.createElement("img");
     g.src = "gundam.png";
     g.classList.add("running-gundam");
     g.style.position = "fixed";
-    g.style.left = "-150px";
+    g.style.left = "-180px";
     g.style.bottom = "40px";
-    g.style.width = "120px";
-    g.style.maxWidth = "90vw";
-    g.style.transition = "left 2.5s linear";
+    g.style.width = "150px";
+    g.style.transition = "left 2.8s linear";
     g.style.zIndex = "9999";
     document.body.appendChild(g);
 
     const rect = btn.getBoundingClientRect();
-    const targetX = rect.left - 60;
+    const targetX = rect.left - 70;
 
     setTimeout(() => g.style.left = targetX + "px", 50);
 
     setTimeout(() => {
         btn.style.transition = "all 2s ease";
-        btn.style.position = "relative";
-        btn.style.left = "300px";
+        btn.style.left = "350px";
         btn.style.opacity = "0";
-    }, 2600);
+    }, 2900);
 
     setTimeout(() => {
-        g.style.transition = "left 2s linear";
         g.style.left = "120vw";
-    }, 2800);
+    }, 3200);
 
     setTimeout(() => {
         btn.style.display = "none";
         g.remove();
-    }, 5200);
+    }, 5400);
 }
-
-setInterval(() => {
-    let heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 3000);
-}, 600);
 </script>
 
 </body>
