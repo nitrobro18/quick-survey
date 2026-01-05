@@ -12,6 +12,8 @@
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
     }
 
     h1 {
@@ -38,11 +40,14 @@
         padding: 30px;
         border-radius: 30px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        position: relative;
+        z-index: 1;
     }
 
     .question {
         display: none;
         animation: fadeIn 0.4s ease;
+        position: relative;
     }
     .question.active {
         display: block;
@@ -62,6 +67,8 @@
         font-weight: 600;
         transition: transform 0.18s, background 0.2s;
         text-align: center;
+        position: relative;
+        z-index: 2;
     }
 
     .btn:hover {
@@ -77,23 +84,44 @@
         margin: 15px auto 25px;
     }
 
-    /* Animation */
-    @keyframes runCycle {
+    /* Gundam animations */
+    @keyframes gundamWalk {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    
+    @keyframes gundamJump {
         0% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+        50% { transform: translateY(-120px); }
         100% { transform: translateY(0); }
     }
-    .running-gundam {
-        animation: runCycle 0.35s infinite;
+    
+    @keyframes buttonPickup {
+        0% { transform: scale(1) rotate(0deg); opacity: 1; }
+        20% { transform: scale(0.9) rotate(-5deg); opacity: 0.9; }
+        40% { transform: scale(0.7) rotate(-15deg); opacity: 0.8; }
+        60% { transform: scale(0.5) rotate(-25deg); opacity: 0.7; }
+        80% { transform: scale(0.3) rotate(-35deg); opacity: 0.6; }
+        100% { transform: scale(0.2) rotate(-45deg); opacity: 0; }
     }
 
-    /* YES screen & Final screen */
-    #yesScreen, #finalScreen {
+    .running-gundam {
+        animation: gundamWalk 0.4s infinite;
+        position: fixed;
+        width: 120px;
+        z-index: 10000;
+        pointer-events: none;
+    }
+
+    /* YES screen - Now the final page */
+    #yesScreen {
         display: none;
         text-align: center;
         padding: 40px 20px;
         font-size: 26px;
         color: #333;
+        max-width: 600px;
+        margin: 0 auto;
     }
 
     /* Cat image */
@@ -101,7 +129,17 @@
         width: 75%;
         max-width: 320px;
         border-radius: 20px;
-        margin-top: 30px;
+        margin-top: 20px;
+    }
+    
+    /* Kitty gif styling - Added to yes screen */
+    .kitty-gif {
+        display: block;
+        width: 280px;
+        max-width: 80%;
+        margin: 30px auto 20px;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     @keyframes fadeIn {
@@ -119,7 +157,7 @@
 
     <!-- Q1 -->
     <div class="question active" id="q1">
-        <h2>How’s your week going so far?</h2>
+        <h2>How's your week going so far?</h2>
         <button class="btn" onclick="next()">Great</button>
         <button class="btn" onclick="next()">Good</button>
         <button class="btn" onclick="next()">Meh</button>
@@ -128,7 +166,7 @@
 
     <!-- Q2 -->
     <div class="question" id="q2">
-        <h2>What’s your favorite kind of hangout?</h2>
+        <h2>What's your favorite kind of hangout?</h2>
         <button class="btn" onclick="next()">Movies</button>
         <button class="btn" onclick="next()">Food</button>
         <button class="btn" onclick="next()">Chill conversation</button>
@@ -140,7 +178,7 @@
         <h2>Do you like Gundam?</h2>
         <img class="gundam-pic" src="gundam.png">
         <button class="btn" onclick="next()">Yes</button>
-        <button id="noButton" class="btn" onclick="moveNoButton()">No</button>
+        <button id="noButton" class="btn" onclick="next()">No</button> <!-- Normal next for Q3 -->
     </div>
 
     <!-- Q4 -->
@@ -159,24 +197,20 @@
         <button class="btn" onclick="next()">Absolutely</button>
     </div>
 
-    <!-- Q6 Final -->
+    <!-- Q6 Final - Only here the Gundam steals the No button -->
     <div class="question" id="q6">
-        <h2>Denise… would you maybe want to go on a date with me? ❤️</h2>
+        <h2>Denise... would you maybe want to go on a date with me and be my girlfriend? ❤️</h2>
         <button class="btn" onclick="yesAnswer()">Yes</button>
-        <button id="noButton2" class="btn" onclick="moveNoButton()">No</button>
+        <button id="noButtonFinal" class="btn" onclick="gundamStealNoButton()">No</button> <!-- Special function for final Q -->
     </div>
 
 </div>
 
-<!-- YES SCREEN -->
+<!-- YES SCREEN - Now the final page with kitty gif -->
 <div id="yesScreen">
-    <h2>aw yay! i’ll text you :3</h2>
-    <img src="cat.png">
-</div>
-
-<!-- FINAL -->
-<div id="finalScreen">
-    <h2>Thanks for taking my cute little survey! 💖</h2>
+    <h2>Yippe! Te amo :3 </h2>
+    <img src="cat.png" alt="Happy cat">
+    <img src="kitty-kittyjump.gif" alt="Happy jumping kitty" class="kitty-gif">
 </div>
 
 <script>
@@ -193,40 +227,78 @@ function yesAnswer() {
     document.getElementById("yesScreen").style.display = "block";
 }
 
-function moveNoButton() {
-    const btn = document.getElementById("noButton") || document.getElementById("noButton2");
+// Special function ONLY for the final question
+function gundamStealNoButton() {
+    const btn = document.getElementById("noButtonFinal");
+    const btnRect = btn.getBoundingClientRect();
+    
+    // Disable the button so it can't be clicked again
     btn.disabled = true;
-
-    let g = document.createElement("img");
-    g.src = "gundam.png";
-    g.classList.add("running-gundam");
-    g.style.position = "fixed";
-    g.style.left = "-180px";
-    g.style.bottom = "40px";
-    g.style.width = "150px";
-    g.style.transition = "left 2.8s linear";
-    g.style.zIndex = "9999";
-    document.body.appendChild(g);
-
-    const rect = btn.getBoundingClientRect();
-    const targetX = rect.left - 70;
-
-    setTimeout(() => g.style.left = targetX + "px", 50);
-
+    btn.style.pointerEvents = "none";
+    
+    // Create the Gundam image
+    let gundam = document.createElement("img");
+    gundam.src = "gundam.png";
+    gundam.classList.add("running-gundam");
+    gundam.style.position = "fixed";
+    gundam.style.left = "-150px";
+    gundam.style.bottom = "30px"; // Walk at bottom of screen
+    gundam.style.width = "120px";
+    gundam.style.transition = "left 2s linear";
+    gundam.style.zIndex = "10000";
+    gundam.style.transform = "scaleX(-1)"; // Make it face right
+    
+    document.body.appendChild(gundam);
+    
+    // Phase 1: Gundam walks to position under the button
     setTimeout(() => {
-        btn.style.transition = "all 2s ease";
-        btn.style.left = "350px";
+        const targetX = btnRect.left + (btnRect.width / 2) - 60; // Center under button
+        gundam.style.left = targetX + "px";
+    }, 50);
+    
+    // Phase 2: Gundam stops, jumps up to grab button
+    setTimeout(() => {
+        // Stop walking animation
+        gundam.style.animation = "none";
+        
+        // Jump up animation
+        gundam.style.animation = "gundamJump 0.8s ease-in-out";
+        gundam.style.transform = "scaleX(-1) translateY(0)";
+        
+        // Make button appear to be grabbed - shrink and fade out
+        btn.style.transition = "all 0.8s ease-in-out";
+        btn.style.animation = "buttonPickup 0.8s forwards";
+        
+    }, 2100); // Wait for walking to finish
+    
+    // Phase 3: Gundam returns to bottom with button
+    setTimeout(() => {
+        // Return to walking animation at bottom
+        gundam.style.animation = "gundamWalk 0.4s infinite";
+        gundam.style.bottom = "30px";
+        gundam.style.transform = "scaleX(-1)";
+        
+        // Hide the button completely
         btn.style.opacity = "0";
-    }, 2900);
-
-    setTimeout(() => {
-        g.style.left = "120vw";
-    }, 3200);
-
-    setTimeout(() => {
+        btn.style.visibility = "hidden";
         btn.style.display = "none";
-        g.remove();
-    }, 5400);
+        
+    }, 3000); // After jump animation
+    
+    // Phase 4: Gundam runs off screen with button
+    setTimeout(() => {
+        gundam.style.transition = "left 1.5s ease-out";
+        gundam.style.left = "120vw";
+    }, 3500);
+    
+    // Phase 5: Clean up
+    setTimeout(() => {
+        gundam.remove();
+        
+        // The "No" button is now gone forever on this question
+        // Only the "Yes" button remains clickable
+        console.log("Gundam successfully stole the 'No' button! Only 'Yes' remains.");
+    }, 5000);
 }
 </script>
 
