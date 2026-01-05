@@ -122,6 +122,8 @@
         color: #333;
         max-width: 600px;
         margin: 0 auto;
+        position: relative;
+        z-index: 10;
     }
 
     /* Cat image */
@@ -130,6 +132,8 @@
         max-width: 320px;
         border-radius: 20px;
         margin-top: 20px;
+        position: relative;
+        z-index: 11;
     }
     
     /* Kitty gif styling - Added to yes screen */
@@ -140,6 +144,65 @@
         margin: 30px auto 20px;
         border-radius: 20px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 11;
+    }
+
+    /* Confetti container */
+    #confetti-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9;
+        overflow: hidden;
+    }
+
+    /* Confetti pieces */
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0;
+        animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+        0% {
+            transform: translateY(-100px) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* Floating hearts */
+    .floating-heart {
+        position: fixed;
+        font-size: 24px;
+        color: #ff6a86;
+        opacity: 0;
+        z-index: 8;
+        animation: floatUp 4s ease-in forwards;
+        pointer-events: none;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(100vh) rotate(0deg) scale(0.5);
+            opacity: 0.8;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg) scale(1.2);
+            opacity: 0;
+        }
     }
 
     @keyframes fadeIn {
@@ -199,7 +262,7 @@
 
     <!-- Q6 Final - Only here the Gundam steals the No button -->
     <div class="question" id="q6">
-        <h2>Denise... would you maybe want to go on a date with me and be my girlfriend? ❤️</h2>
+        <h2>Denise... would you maybe want to go on a date with me? ❤️</h2>
         <button class="btn" onclick="yesAnswer()">Yes</button>
         <button id="noButtonFinal" class="btn" onclick="gundamStealNoButton()">No</button> <!-- Special function for final Q -->
     </div>
@@ -208,10 +271,13 @@
 
 <!-- YES SCREEN - Now the final page with kitty gif -->
 <div id="yesScreen">
-    <h2>Yippe! Te amo :3 </h2>
+    <h2>YIPPE! Te Amo :3</h2>
     <img src="cat.png" alt="Happy cat">
     <img src="kitty-kittyjump.gif" alt="Happy jumping kitty" class="kitty-gif">
 </div>
+
+<!-- Confetti and hearts containers -->
+<div id="confetti-container"></div>
 
 <script>
 let current = 1;
@@ -225,6 +291,10 @@ function next() {
 function yesAnswer() {
     document.querySelector(".container").style.display = "none";
     document.getElementById("yesScreen").style.display = "block";
+    
+    // Start the celebration effects
+    startConfetti();
+    startHearts();
 }
 
 // Special function ONLY for the final question
@@ -299,6 +369,88 @@ function gundamStealNoButton() {
         // Only the "Yes" button remains clickable
         console.log("Gundam successfully stole the 'No' button! Only 'Yes' remains.");
     }, 5000);
+}
+
+// Confetti effect
+function startConfetti() {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#ff6a86', '#ffb6c1', '#ffd700', '#98fb98', '#87ceeb', '#dda0dd'];
+    
+    for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        
+        // Random position
+        confetti.style.left = Math.random() * 100 + 'vw';
+        
+        // Random color
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Random size
+        const size = Math.random() * 10 + 5;
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        
+        // Random animation delay
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        
+        // Random animation duration
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        
+        container.appendChild(confetti);
+        
+        // Remove confetti after animation completes
+        setTimeout(() => {
+            confetti.remove();
+        }, 5000);
+    }
+}
+
+// Floating hearts effect
+function startHearts() {
+    const heartEmojis = ['❤️', '💖', '💕', '💗', '💓', '💞', '💘', '💝'];
+    
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        
+        // Random position
+        heart.style.left = Math.random() * 100 + 'vw';
+        
+        // Random size
+        const size = Math.random() * 30 + 20;
+        heart.style.fontSize = size + 'px';
+        
+        // Random animation duration
+        const duration = Math.random() * 3 + 4;
+        heart.style.animationDuration = duration + 's';
+        
+        // Random animation delay
+        heart.style.animationDelay = Math.random() * 2 + 's';
+        
+        document.body.appendChild(heart);
+        
+        // Remove heart after animation completes
+        setTimeout(() => {
+            heart.remove();
+        }, (duration + 2) * 1000);
+    }
+    
+    // Create initial burst of hearts
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => createHeart(), i * 100);
+    }
+    
+    // Continue creating hearts periodically
+    const heartInterval = setInterval(() => {
+        createHeart();
+    }, 300);
+    
+    // Stop creating hearts after 10 seconds
+    setTimeout(() => {
+        clearInterval(heartInterval);
+    }, 10000);
 }
 </script>
 
