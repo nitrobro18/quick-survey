@@ -4,150 +4,328 @@
 <meta charset="UTF-8">
 <title>Quick Survey</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+    :root {
+        --primary-pink: #ff8fab;
+        --soft-pink: #ffc2d1;
+        --light-pink: #ffe5ec;
+        --accent-pink: #fb6f92;
+        --text-dark: #5a3d5c;
+        --text-light: #8b5d7a;
+        --shadow: rgba(251, 111, 146, 0.15);
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    
     body {
-        background: linear-gradient(180deg, #cce6ff, #b3d9ff);
-        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, var(--light-pink) 0%, #ffe5ec 30%, #ffc2d1 70%, var(--soft-pink) 100%);
+        font-family: "Nunito", sans-serif;
         margin: 0;
         padding: 0;
-        overflow-x: hidden;
         min-height: 100vh;
+        overflow-x: hidden;
         position: relative;
+        color: var(--text-dark);
     }
-
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 34px;
-        font-weight: 700;
-        color: #333;
-    }
-
-    h2 {
-        text-align: center;
-        padding: 0 10px;
-        font-size: 24px;
-        color: #444;
-        line-height: 1.4;
-    }
-
-    .container {
-        max-width: 550px;
-        width: 92%;
-        margin: 25px auto;
-        background: white;
-        padding: 30px;
-        border-radius: 30px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        position: relative;
-        z-index: 1;
-    }
-
-    .question {
-        display: none;
-        animation: fadeIn 0.4s ease;
-        position: relative;
-    }
-    .question.active {
-        display: block;
-    }
-
-    .btn {
-        display: block;
+    
+    /* Floating hearts background */
+    .bg-hearts {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        padding: 18px;
-        margin: 14px 0;
-        background: #ff7d95;
-        border: none;
-        font-size: 20px;
-        border-radius: 35px;
-        cursor: pointer;
-        color: white;
-        font-weight: 600;
-        transition: transform 0.18s, background 0.2s;
+        height: 100%;
+        z-index: 0;
+        opacity: 0.3;
+        overflow: hidden;
+    }
+    
+    .bg-heart {
+        position: absolute;
+        color: var(--accent-pink);
+        font-size: 24px;
+        opacity: 0.4;
+        animation: float 25s infinite linear;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 0.4;
+        }
+        90% {
+            opacity: 0.4;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+    
+    /* Header */
+    header {
         text-align: center;
+        padding: 20px 15px 10px;
         position: relative;
         z-index: 2;
     }
-
-    .btn:hover {
-        transform: scale(1.05);
-        background: #ff6a86;
+    
+    h1 {
+        font-family: 'Dancing Script', cursive;
+        font-size: 3.2rem;
+        font-weight: 700;
+        color: var(--accent-pink);
+        margin: 10px 0 5px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
-
+    
+    .subtitle {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        max-width: 500px;
+        margin: 0 auto 15px;
+        font-weight: 300;
+        line-height: 1.5;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 550px;
+        width: 92%;
+        margin: 15px auto 40px;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px var(--shadow);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+    }
+    
+    /* Decorative elements */
+    .corner-flower {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        z-index: 1;
+    }
+    
+    .corner-flower.top-left {
+        top: -5px;
+        left: -5px;
+        transform: rotate(180deg);
+    }
+    
+    .corner-flower.top-right {
+        top: -5px;
+        right: -5px;
+        transform: rotate(270deg);
+    }
+    
+    .corner-flower.bottom-left {
+        bottom: -5px;
+        left: -5px;
+        transform: rotate(90deg);
+    }
+    
+    .corner-flower.bottom-right {
+        bottom: -5px;
+        right: -5px;
+        transform: rotate(0deg);
+    }
+    
+    .corner-flower svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--soft-pink);
+        opacity: 0.6;
+    }
+    
+    /* Question styling */
+    .question {
+        display: none;
+        animation: fadeInUp 0.5s ease-out;
+        position: relative;
+        z-index: 3;
+    }
+    
+    .question.active {
+        display: block;
+    }
+    
+    h2 {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0 0 30px;
+        line-height: 1.4;
+        padding: 0 10px;
+        font-family: 'Nunito', sans-serif;
+    }
+    
+    .question-counter {
+        display: inline-block;
+        background: var(--soft-pink);
+        color: var(--accent-pink);
+        font-size: 0.9rem;
+        padding: 5px 15px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    /* Buttons */
+    .btn-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 25px;
+    }
+    
+    .btn {
+        display: block;
+        width: 100%;
+        padding: 18px 25px;
+        background: linear-gradient(to right, var(--primary-pink), var(--accent-pink));
+        border: none;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 5px 15px rgba(251, 111, 146, 0.3);
+        overflow: hidden;
+    }
+    
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.7s;
+    }
+    
+    .btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(251, 111, 146, 0.4);
+    }
+    
+    .btn:hover::before {
+        left: 100%;
+    }
+    
+    .btn:active {
+        transform: translateY(-2px);
+    }
+    
     /* Gundam image */
     .gundam-pic {
-        width: 160px;
+        width: 180px;
         max-width: 85%;
         display: block;
-        margin: 15px auto 25px;
+        margin: 20px auto 30px;
+        filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+        border-radius: 10px;
     }
-
+    
     /* Gundam animations */
     @keyframes gundamWalk {
         0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+        50% { transform: translateY(-8px); }
     }
     
     @keyframes gundamJump {
-        0% { transform: translateY(0); }
-        50% { transform: translateY(-120px); }
-        100% { transform: translateY(0); }
+        0% { transform: translateY(0) scaleX(-1); }
+        50% { transform: translateY(-120px) scaleX(-1); }
+        100% { transform: translateY(0) scaleX(-1); }
     }
     
     @keyframes buttonPickup {
         0% { transform: scale(1) rotate(0deg); opacity: 1; }
-        20% { transform: scale(0.9) rotate(-5deg); opacity: 0.9; }
-        40% { transform: scale(0.7) rotate(-15deg); opacity: 0.8; }
-        60% { transform: scale(0.5) rotate(-25deg); opacity: 0.7; }
-        80% { transform: scale(0.3) rotate(-35deg); opacity: 0.6; }
-        100% { transform: scale(0.2) rotate(-45deg); opacity: 0; }
+        100% { transform: scale(0.1) rotate(-45deg); opacity: 0; }
     }
-
+    
     .running-gundam {
-        animation: gundamWalk 0.4s infinite;
+        animation: gundamWalk 0.5s infinite;
         position: fixed;
-        width: 120px;
+        width: 130px;
         z-index: 10000;
         pointer-events: none;
+        filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
     }
-
-    /* YES screen - Now the final page */
+    
+    /* YES screen - Final page */
     #yesScreen {
         display: none;
         text-align: center;
         padding: 40px 20px;
-        font-size: 26px;
-        color: #333;
+        font-size: 1.8rem;
+        color: var(--text-dark);
         max-width: 600px;
         margin: 0 auto;
         position: relative;
         z-index: 10;
+        animation: fadeInUp 1s ease-out;
     }
-
-    /* Cat image */
+    
+    .yes-title {
+        font-family: 'Dancing Script', cursive;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--accent-pink);
+        margin: 20px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .yes-message {
+        font-size: 1.5rem;
+        color: var(--text-light);
+        margin: 20px 0 40px;
+        line-height: 1.6;
+    }
+    
+    /* Kitty images */
     #yesScreen img {
-        width: 75%;
-        max-width: 320px;
+        width: 85%;
+        max-width: 350px;
         border-radius: 20px;
-        margin-top: 20px;
+        margin: 20px auto;
+        display: block;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         position: relative;
         z-index: 11;
     }
     
-    /* Kitty gif styling - Added to yes screen */
     .kitty-gif {
-        display: block;
-        width: 280px;
-        max-width: 80%;
+        width: 300px;
+        max-width: 85%;
         margin: 30px auto 20px;
         border-radius: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         position: relative;
         z-index: 11;
     }
-
+    
     /* Confetti container */
     #confetti-container {
         position: fixed;
@@ -159,16 +337,17 @@
         z-index: 9;
         overflow: hidden;
     }
-
+    
     /* Confetti pieces */
     .confetti {
         position: absolute;
-        width: 10px;
-        height: 10px;
+        width: 12px;
+        height: 12px;
         opacity: 0;
         animation: confettiFall 3s linear forwards;
+        border-radius: 2px;
     }
-
+    
     @keyframes confettiFall {
         0% {
             transform: translateY(-100px) rotate(0deg);
@@ -179,18 +358,19 @@
             opacity: 0;
         }
     }
-
-    /* Floating hearts */
+    
+    /* Floating hearts for yes screen */
     .floating-heart {
         position: fixed;
-        font-size: 24px;
-        color: #ff6a86;
+        font-size: 28px;
+        color: var(--accent-pink);
         opacity: 0;
         z-index: 8;
         animation: floatUp 4s ease-in forwards;
         pointer-events: none;
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
     }
-
+    
     @keyframes floatUp {
         0% {
             transform: translateY(100vh) rotate(0deg) scale(0.5);
@@ -204,88 +384,228 @@
             opacity: 0;
         }
     }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
+    
+    /* Progress bar */
+    .progress-container {
+        width: 100%;
+        height: 8px;
+        background: var(--light-pink);
+        border-radius: 4px;
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(to right, var(--primary-pink), var(--accent-pink));
+        width: 16.6%;
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Final question special styling */
+    .final-question {
+        background: linear-gradient(135deg, rgba(255, 226, 233, 0.7) 0%, rgba(255, 255, 255, 0.9) 100%);
+        padding: 25px;
+        border-radius: 20px;
+        margin-top: 20px;
+        border: 2px dashed var(--primary-pink);
+    }
+    
+    .final-question h2 {
+        color: var(--accent-pink);
+        font-size: 2.2rem;
+        margin-bottom: 35px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .container {
+            padding: 25px 20px;
+            width: 95%;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+        }
+        
+        .yes-title {
+            font-size: 2.8rem;
+        }
+        
+        .btn {
+            padding: 16px 20px;
+        }
     }
 </style>
 </head>
 
 <body>
 
-<h1>Quick Survey</h1>
+<!-- Background floating hearts -->
+<div class="bg-hearts" id="bgHearts"></div>
+
+<header>
+    <h1>Quick Survey</h1>
+    <div class="subtitle">Just a few questions... with a special ending ❤️</div>
+</header>
 
 <div class="container">
+    <!-- Decorative corner flowers -->
+    <div class="corner-flower top-left">
+        <svg viewBox="0 0 24 24">
+            <path d="M12,2C15.87,2 19,5.13 19,9C19,11.38 17.81,13.47 16,14.74V22H8V14.74C6.19,13.47 5,11.38 5,9C5,5.13 8.13,2 12,2M12,4C9.24,4 7,6.24 7,9C7,10.57 7.74,12 9,13V20H15V13C16.26,12 17,10.57 17,9C17,6.24 14.76,4 12,4Z" />
+        </svg>
+    </div>
+    <div class="corner-flower top-right">
+        <svg viewBox="0 0 24 24">
+            <path d="M12,2C15.87,2 19,5.13 19,9C19,11.38 17.81,13.47 16,14.74V22H8V14.74C6.19,13.47 5,11.38 5,9C5,5.13 8.13,2 12,2M12,4C9.24,4 7,6.24 7,9C7,10.57 7.74,12 9,13V20H15V13C16.26,12 17,10.57 17,9C17,6.24 14.76,4 12,4Z" />
+        </svg>
+    </div>
+    <div class="corner-flower bottom-left">
+        <svg viewBox="0 0 24 24">
+            <path d="M12,2C15.87,2 19,5.13 19,9C19,11.38 17.81,13.47 16,14.74V22H8V14.74C6.19,13.47 5,11.38 5,9C5,5.13 8.13,2 12,2M12,4C9.24,4 7,6.24 7,9C7,10.57 7.74,12 9,13V20H15V13C16.26,12 17,10.57 17,9C17,6.24 14.76,4 12,4Z" />
+        </svg>
+    </div>
+    <div class="corner-flower bottom-right">
+        <svg viewBox="0 0 24 24">
+            <path d="M12,2C15.87,2 19,5.13 19,9C19,11.38 17.81,13.47 16,14.74V22H8V14.74C6.19,13.47 5,11.38 5,9C5,5.13 8.13,2 12,2M12,4C9.24,4 7,6.24 7,9C7,10.57 7.74,12 9,13V20H15V13C16.26,12 17,10.57 17,9C17,6.24 14.76,4 12,4Z" />
+        </svg>
+    </div>
+    
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
     <!-- Q1 -->
     <div class="question active" id="q1">
+        <div class="question-counter">Question 1 of 6</div>
         <h2>How's your week going so far?</h2>
-        <button class="btn" onclick="next()">Great</button>
-        <button class="btn" onclick="next()">Good</button>
-        <button class="btn" onclick="next()">Meh</button>
-        <button class="btn" onclick="next()">Could be better</button>
+        <div class="btn-container">
+            <button class="btn" onclick="next()">Great <i class="fas fa-smile"></i></button>
+            <button class="btn" onclick="next()">Good <i class="fas fa-smile-beam"></i></button>
+            <button class="btn" onclick="next()">Meh <i class="fas fa-meh"></i></button>
+            <button class="btn" onclick="next()">Could be better <i class="fas fa-cloud"></i></button>
+        </div>
     </div>
 
     <!-- Q2 -->
     <div class="question" id="q2">
+        <div class="question-counter">Question 2 of 6</div>
         <h2>What's your favorite kind of hangout?</h2>
-        <button class="btn" onclick="next()">Movies</button>
-        <button class="btn" onclick="next()">Food</button>
-        <button class="btn" onclick="next()">Chill conversation</button>
-        <button class="btn" onclick="next()">Anything fun</button>
+        <div class="btn-container">
+            <button class="btn" onclick="next()">Movies <i class="fas fa-film"></i></button>
+            <button class="btn" onclick="next()">Food <i class="fas fa-utensils"></i></button>
+            <button class="btn" onclick="next()">Chill conversation <i class="fas fa-comments"></i></button>
+            <button class="btn" onclick="next()">Anything fun <i class="fas fa-star"></i></button>
+        </div>
     </div>
 
     <!-- Q3 Gundam -->
     <div class="question" id="q3">
+        <div class="question-counter">Question 3 of 6</div>
         <h2>Do you like Gundam?</h2>
-        <img class="gundam-pic" src="gundam.png">
-        <button class="btn" onclick="next()">Yes</button>
-        <button id="noButton" class="btn" onclick="next()">No</button> <!-- Normal next for Q3 -->
+        <img class="gundam-pic" src="gundam.png" alt="Cute Gundam">
+        <div class="btn-container">
+            <button class="btn" onclick="next()">Yes <i class="fas fa-heart"></i></button>
+            <button id="noButton" class="btn" onclick="next()">No <i class="fas fa-times"></i></button>
+        </div>
     </div>
 
     <!-- Q4 -->
     <div class="question" id="q4">
+        <div class="question-counter">Question 4 of 6</div>
         <h2>Which days are usually easiest for you to do something fun?</h2>
-        <button class="btn" onclick="next()">Weekdays</button>
-        <button class="btn" onclick="next()">Weekends</button>
-        <button class="btn" onclick="next()">Depends</button>
+        <div class="btn-container">
+            <button class="btn" onclick="next()">Weekdays <i class="fas fa-calendar-day"></i></button>
+            <button class="btn" onclick="next()">Weekends <i class="fas fa-calendar-weekend"></i></button>
+            <button class="btn" onclick="next()">Depends <i class="fas fa-calendar-alt"></i></button>
+        </div>
     </div>
 
     <!-- Q5 -->
     <div class="question" id="q5">
+        <div class="question-counter">Question 5 of 6</div>
         <h2>Do you enjoy spending time with certain people who make you smile?</h2>
-        <button class="btn" onclick="next()">Yes</button>
-        <button class="btn" onclick="next()">Definitely yes</button>
-        <button class="btn" onclick="next()">No</button>
+        <div class="btn-container">
+            <button class="btn" onclick="next()">Yes <i class="fas fa-smile"></i></button>
+            <button class="btn" onclick="next()">Definitely yes <i class="fas fa-grin-stars"></i></button>
+            <button class="btn" onclick="next()">No <i class="fas fa-frown"></i></button>
+        </div>
     </div>
 
     <!-- Q6 Final - Only here the Gundam steals the No button -->
     <div class="question" id="q6">
-        <h2>Denise... would you maybe want to go on a date with me and be my girlfriend :3 ? ❤️</h2>
-        <button class="btn" onclick="yesAnswer()">Yes</button>
-        <button id="noButtonFinal" class="btn" onclick="gundamStealNoButton()">No</button> <!-- Special function for final Q -->
+        <div class="question-counter">Final Question</div>
+        <div class="final-question">
+            <h2>Denise... would you maybe want to go on a date with me and be my girlfriend? ❤️</h2>
+            <div class="btn-container">
+                <button class="btn" onclick="yesAnswer()">Yes, absolutely! <i class="fas fa-heart"></i></button>
+                <button id="noButtonFinal" class="btn" onclick="gundamStealNoButton()">No <i class="fas fa-times"></i></button>
+            </div>
+        </div>
     </div>
-
 </div>
 
-<!-- YES SCREEN - Now the final page with kitty gif -->
+<!-- YES SCREEN - Final page with kitty gif -->
 <div id="yesScreen">
-    <h2>YIPPE! Te Amo :3 ❤️❤️</h2>
+    <div class="yes-title">YAY! You said YES! 🎉</div>
+    <div class="yes-message">Te Amo Mi Amor ❤️ <br> I'm so happy you're my girlfriend! 😊</div>
     <img src="cat.png" alt="Happy cat">
     <img src="kitty-kittyjump.gif" alt="Happy jumping kitty" class="kitty-gif">
+    <div class="yes-message">Can't wait for our first date! 💕</div>
 </div>
 
-<!-- Confetti and hearts containers -->
+<!-- Confetti container -->
 <div id="confetti-container"></div>
 
 <script>
 let current = 1;
+const totalQuestions = 6;
+
+// Create background floating hearts
+function createBackgroundHearts() {
+    const container = document.getElementById('bgHearts');
+    for (let i = 0; i < 25; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'bg-heart';
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+        heart.style.animationDelay = Math.random() * 20 + 's';
+        heart.style.animationDuration = (Math.random() * 10 + 20) + 's';
+        container.appendChild(heart);
+    }
+}
+
+function updateProgressBar() {
+    const progressBar = document.getElementById('progressBar');
+    const width = (current / totalQuestions) * 100;
+    progressBar.style.width = width + '%';
+}
 
 function next() {
     document.getElementById(`q${current}`).classList.remove("active");
     current++;
     document.getElementById(`q${current}`).classList.add("active");
+    updateProgressBar();
 }
 
 function yesAnswer() {
@@ -312,17 +632,17 @@ function gundamStealNoButton() {
     gundam.classList.add("running-gundam");
     gundam.style.position = "fixed";
     gundam.style.left = "-150px";
-    gundam.style.bottom = "30px"; // Walk at bottom of screen
-    gundam.style.width = "120px";
-    gundam.style.transition = "left 2s linear";
+    gundam.style.bottom = "30px";
+    gundam.style.width = "130px";
+    gundam.style.transition = "left 2s ease-out";
     gundam.style.zIndex = "10000";
-    gundam.style.transform = "scaleX(-1)"; // Make it face right
+    gundam.style.transform = "scaleX(-1)";
     
     document.body.appendChild(gundam);
     
     // Phase 1: Gundam walks to position under the button
     setTimeout(() => {
-        const targetX = btnRect.left + (btnRect.width / 2) - 60; // Center under button
+        const targetX = btnRect.left + (btnRect.width / 2) - 65;
         gundam.style.left = targetX + "px";
     }, 50);
     
@@ -333,13 +653,12 @@ function gundamStealNoButton() {
         
         // Jump up animation
         gundam.style.animation = "gundamJump 0.8s ease-in-out";
-        gundam.style.transform = "scaleX(-1) translateY(0)";
         
         // Make button appear to be grabbed - shrink and fade out
         btn.style.transition = "all 0.8s ease-in-out";
         btn.style.animation = "buttonPickup 0.8s forwards";
         
-    }, 2100); // Wait for walking to finish
+    }, 2100);
     
     // Phase 3: Gundam returns to bottom with button
     setTimeout(() => {
@@ -353,7 +672,7 @@ function gundamStealNoButton() {
         btn.style.visibility = "hidden";
         btn.style.display = "none";
         
-    }, 3000); // After jump animation
+    }, 3000);
     
     // Phase 4: Gundam runs off screen with button
     setTimeout(() => {
@@ -364,9 +683,6 @@ function gundamStealNoButton() {
     // Phase 5: Clean up
     setTimeout(() => {
         gundam.remove();
-        
-        // The "No" button is now gone forever on this question
-        // Only the "Yes" button remains clickable
         console.log("Gundam successfully stole the 'No' button! Only 'Yes' remains.");
     }, 5000);
 }
@@ -374,9 +690,9 @@ function gundamStealNoButton() {
 // Confetti effect
 function startConfetti() {
     const container = document.getElementById('confetti-container');
-    const colors = ['#ff6a86', '#ffb6c1', '#ffd700', '#98fb98', '#87ceeb', '#dda0dd'];
+    const colors = ['#ff6a86', '#ff8fab', '#ffb6c1', '#ffd700', '#98fb98', '#87ceeb', '#dda0dd'];
     
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 180; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         
@@ -387,9 +703,14 @@ function startConfetti() {
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         
         // Random size
-        const size = Math.random() * 10 + 5;
+        const size = Math.random() * 12 + 6;
         confetti.style.width = size + 'px';
         confetti.style.height = size + 'px';
+        
+        // Random shape
+        if (Math.random() > 0.5) {
+            confetti.style.borderRadius = '50%';
+        }
         
         // Random animation delay
         confetti.style.animationDelay = Math.random() * 2 + 's';
@@ -408,7 +729,7 @@ function startConfetti() {
 
 // Floating hearts effect
 function startHearts() {
-    const heartEmojis = ['❤️', '💖', '💕', '💗', '💓', '💞', '💘', '💝'];
+    const heartEmojis = ['❤️', '💖', '💕', '💗', '💓', '💞', '💘', '💝', '🥰', '😍'];
     
     function createHeart() {
         const heart = document.createElement('div');
@@ -419,7 +740,7 @@ function startHearts() {
         heart.style.left = Math.random() * 100 + 'vw';
         
         // Random size
-        const size = Math.random() * 30 + 20;
+        const size = Math.random() * 35 + 25;
         heart.style.fontSize = size + 'px';
         
         // Random animation duration
@@ -438,8 +759,8 @@ function startHearts() {
     }
     
     // Create initial burst of hearts
-    for (let i = 0; i < 30; i++) {
-        setTimeout(() => createHeart(), i * 100);
+    for (let i = 0; i < 40; i++) {
+        setTimeout(() => createHeart(), i * 80);
     }
     
     // Continue creating hearts periodically
@@ -447,11 +768,17 @@ function startHearts() {
         createHeart();
     }, 300);
     
-    // Stop creating hearts after 10 seconds
+    // Stop creating hearts after 12 seconds
     setTimeout(() => {
         clearInterval(heartInterval);
-    }, 10000);
+    }, 12000);
 }
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    createBackgroundHearts();
+    updateProgressBar();
+});
 </script>
 
 </body>
